@@ -1,0 +1,810 @@
+openapi: 3.0.0
+info:
+  title: mobilitygreen API
+  description: API REST completa con autenticación JWT y CRUD de entidades
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3019/api
+    description: Servidor de desarrollo
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@sistema.com
+        password:
+          type: string
+          example: Admin123456
+
+    RegisterRequest:
+      type: object
+      required:
+        - nombre
+        - email
+        - password
+        - role
+      properties:
+        nombre:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        nombre:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        createdAt:
+          type: string
+
+    EntityBase:
+      type: object
+      properties:
+        _id:
+          type: string
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        imagen:
+          type: string
+        imagenThumbnail:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+        '401':
+          description: Credenciales inválidas
+
+  /auth/register:
+    post:
+      tags:
+        - Autenticación
+      summary: Registrar usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Usuario registrado
+        '409':
+          description: Email ya existe
+
+  /auth/profile:
+    get:
+      tags:
+        - Autenticación
+      summary: Obtener perfil
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Perfil obtenido
+
+  /auth/users:
+    get:
+      tags:
+        - Autenticación
+      summary: Listar usuarios (Admin)
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+
+  /upload/image:
+    post:
+      tags:
+        - Upload
+      summary: Subir imagen
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Imagen subida
+
+  /usuario:
+    get:
+      tags:
+        - Usuario
+      summary: Listar todos los Usuarios
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de Usuarios
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityBase'
+    post:
+      tags:
+        - Usuario
+      summary: Crear Usuario
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '201':
+          description: Usuario creado
+
+  /usuario/{id}:
+    get:
+      tags:
+        - Usuario
+      summary: Obtener Usuario por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario encontrado
+        '404':
+          description: Usuario no encontrado
+    patch:
+      tags:
+        - Usuario
+      summary: Actualizar Usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '200':
+          description: Usuario actualizado
+    delete:
+      tags:
+        - Usuario
+      summary: Eliminar Usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario eliminado
+
+  /usuario/{id}/upload-image:
+    post:
+      tags:
+        - Usuario
+      summary: Subir imagen a Usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Imagen subida
+
+  /vehiculo:
+    get:
+      tags:
+        - Vehiculo
+      summary: Listar todos los Vehiculos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de Vehiculos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityBase'
+    post:
+      tags:
+        - Vehiculo
+      summary: Crear Vehiculo
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '201':
+          description: Vehiculo creado
+
+  /vehiculo/{id}:
+    get:
+      tags:
+        - Vehiculo
+      summary: Obtener Vehiculo por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vehiculo encontrado
+        '404':
+          description: Vehiculo no encontrado
+    patch:
+      tags:
+        - Vehiculo
+      summary: Actualizar Vehiculo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '200':
+          description: Vehiculo actualizado
+    delete:
+      tags:
+        - Vehiculo
+      summary: Eliminar Vehiculo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vehiculo eliminado
+
+  /vehiculo/{id}/upload-image:
+    post:
+      tags:
+        - Vehiculo
+      summary: Subir imagen a Vehiculo
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Imagen subida
+
+  /viaje:
+    get:
+      tags:
+        - Viaje
+      summary: Listar todos los Viajes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de Viajes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityBase'
+    post:
+      tags:
+        - Viaje
+      summary: Crear Viaje
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '201':
+          description: Viaje creado
+
+  /viaje/{id}:
+    get:
+      tags:
+        - Viaje
+      summary: Obtener Viaje por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Viaje encontrado
+        '404':
+          description: Viaje no encontrado
+    patch:
+      tags:
+        - Viaje
+      summary: Actualizar Viaje
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '200':
+          description: Viaje actualizado
+    delete:
+      tags:
+        - Viaje
+      summary: Eliminar Viaje
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Viaje eliminado
+
+  /viaje/{id}/upload-image:
+    post:
+      tags:
+        - Viaje
+      summary: Subir imagen a Viaje
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Imagen subida
+
+  /ruta:
+    get:
+      tags:
+        - Ruta
+      summary: Listar todos los Rutas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de Rutas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityBase'
+    post:
+      tags:
+        - Ruta
+      summary: Crear Ruta
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '201':
+          description: Ruta creado
+
+  /ruta/{id}:
+    get:
+      tags:
+        - Ruta
+      summary: Obtener Ruta por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ruta encontrado
+        '404':
+          description: Ruta no encontrado
+    patch:
+      tags:
+        - Ruta
+      summary: Actualizar Ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '200':
+          description: Ruta actualizado
+    delete:
+      tags:
+        - Ruta
+      summary: Eliminar Ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ruta eliminado
+
+  /ruta/{id}/upload-image:
+    post:
+      tags:
+        - Ruta
+      summary: Subir imagen a Ruta
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Imagen subida
+
+  /pago:
+    get:
+      tags:
+        - Pago
+      summary: Listar todos los Pagos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de Pagos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EntityBase'
+    post:
+      tags:
+        - Pago
+      summary: Crear Pago
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nombre
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '201':
+          description: Pago creado
+
+  /pago/{id}:
+    get:
+      tags:
+        - Pago
+      summary: Obtener Pago por ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pago encontrado
+        '404':
+          description: Pago no encontrado
+    patch:
+      tags:
+        - Pago
+      summary: Actualizar Pago
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        '200':
+          description: Pago actualizado
+    delete:
+      tags:
+        - Pago
+      summary: Eliminar Pago
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Pago eliminado
+
+  /pago/{id}/upload-image:
+    post:
+      tags:
+        - Pago
+      summary: Subir imagen a Pago
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Imagen subida
