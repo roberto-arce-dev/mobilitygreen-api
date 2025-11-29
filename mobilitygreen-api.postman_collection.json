@@ -413,6 +413,142 @@
           }
         }
       ]
+    },
+    {
+      "name": "Vehículo",
+      "item": [
+        {
+          "name": "Mis Vehículos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/vehiculo/usuario/{{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehiculo",
+                "usuario",
+                "{{usuarioId}}"
+              ]
+            },
+            "description": "Vehículos registrados del usuario"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints específicos de Vehículo"
+    },
+    {
+      "name": "Viaje",
+      "item": [
+        {
+          "name": "Crear Viaje",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/viaje/crear",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "viaje",
+                "crear"
+              ]
+            },
+            "description": "Crear nuevo viaje",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"vehiculoId\": \"{{vehiculoId}}\",\n  \"origen\": \"Santiago\",\n  \"destino\": \"Valparaíso\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mis Viajes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/viaje/usuario/{{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "viaje",
+                "usuario",
+                "{{usuarioId}}"
+              ]
+            },
+            "description": "Historial de viajes"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints específicos de Viaje"
+    },
+    {
+      "name": "Pago",
+      "item": [
+        {
+          "name": "Registrar Pago",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/pago/registrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pago",
+                "registrar"
+              ]
+            },
+            "description": "Registrar pago de viaje",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"viajeId\": \"{{viajeId}}\",\n  \"monto\": 5000\n}"
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints específicos de Pago"
     }
   ],
   "variable": [
