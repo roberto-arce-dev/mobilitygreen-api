@@ -355,7 +355,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Nombre Actualizado\",\n  \"telefono\": \"+51 987654321\"\n}"
+              "raw": "{\n  \"nombre\": \"Valor de nombre\",\n  \"telefono\": \"+51 900000000\",\n  \"licenciaConducir\": \"Valor de licenciaConducir\",\n  \"metodoPago\": \"Valor de metodoPago\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/usuario-profile/me",
@@ -555,6 +555,36 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:3019/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "filename",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "usuarioId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "vehiculoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "viajeId",
+      "value": "",
       "type": "string"
     }
   ]
